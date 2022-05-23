@@ -6,30 +6,30 @@ import { getDateGivenDay } from '../utils/dates'
 
 interface DayProps {
 	day: string
-	tables: TableType[]
+	tables: TableType[] | null
 }
 const DayTile: React.FC<DayProps> = ({ day, tables }) => {
 	const { colorMode, toggleColorMode } = useColorMode()
 	const isDark: boolean = colorMode === 'dark'
 	const [plan, setPlan] = useState<string>('Rest')
 	const shift: any = {
+		Sunday: 0,
 		Monday: 1,
 		Tuesday: 2,
 		Wednesday: 3,
 		Thursday: 4,
 		Friday: 5,
 		Saturday: 6,
-		Sunday: 0,
 	}
-	const table: TableType[] = tables.filter((table) =>
-		table.days.find((d) => d === shift[day])
-	)
 
 	useEffect(() => {
-		if (table.length > 0) {
-			setPlan(table[0].tname)
-		}
-	}, [table])
+		if (!tables) return
+		const scheduledRoutines = tables.filter((table) => table.days)
+		const routine: TableType = scheduledRoutines.filter((table) =>
+			table.days.find((d) => d === shift[day])
+		)[0]
+		if (routine) setPlan(routine.tname)
+	}, [tables])
 
 	const cardStyles: any = {
 		REST: '💤',

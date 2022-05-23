@@ -6,7 +6,7 @@ import { FaPlus } from 'react-icons/fa'
 import Link from 'next/link'
 
 interface TablesProps {
-	tables: TableType[]
+	tables: TableType[] | null
 }
 
 const Tables: React.FC<TablesProps> = ({ tables }) => {
@@ -21,7 +21,7 @@ const Tables: React.FC<TablesProps> = ({ tables }) => {
 					Create New Routine
 				</Button>
 			</Link>
-			{tables.map((table, i) => (
+			{tables!.map((table, i) => (
 				<Table key={i} table={table} />
 			))}
 		</Box>
