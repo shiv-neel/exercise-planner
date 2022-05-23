@@ -29,7 +29,7 @@ const DayTile: React.FC<DayProps> = ({ day, tables }) => {
 		if (table.length > 0) {
 			setPlan(table[0].tname)
 		}
-	})
+	}, [table])
 
 	const cardStyles: any = {
 		REST: '💤',

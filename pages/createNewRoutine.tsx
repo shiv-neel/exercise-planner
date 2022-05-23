@@ -68,9 +68,10 @@ const CreateNewRoutine = () => {
 			/>
 		),
 	}
+  
+  const uid = useAuth().user!.uid
 
 	const createTable = async () => {
-		const uid = useAuth().user!.uid
 		const { data, error } = await supabase
 			.from('tables')
 			.insert([{ uid: uid, tname: routine }])
