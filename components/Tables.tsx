@@ -16,8 +16,8 @@ const Tables: React.FC<TablesProps> = ({ tables }) => {
 				My Workout Routines
 			</Heading>
 			<Link href='/createNewRoutine'>
-				<Button variant='ghost' className='gap-3 mb-4'>
-					<FaPlus />
+				<Button className='gap-3 mb-4' colorScheme={'messenger'}>
+					<FaPlus className='hover:rotate-180 duration-200' />
 					Create New Routine
 				</Button>
 			</Link>

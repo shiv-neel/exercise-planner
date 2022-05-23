@@ -19,7 +19,7 @@ const DayTile: React.FC<DayProps> = ({ day, tables }) => {
 		Thursday: 4,
 		Friday: 5,
 		Saturday: 6,
-		Sunday: 7,
+		Sunday: 0,
 	}
 	const table: TableType[] = tables.filter((table) =>
 		table.days.find((d) => d === shift[day])
