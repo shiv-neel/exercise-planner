@@ -282,6 +282,7 @@ export const ExerciseListItems: React.FC<ExerciseListItems> = ({
 				<Box
 					backgroundColor={'grayalpha.100'}
 					className='flex flex-col justify-center w-32 text-center h-32 rounded-xl shadow-lg border-2'
+					key={i}
 				>
 					<p className='text-lg'>{stringCasing(exercise.ename)}</p>
 					<p className='italic'>{`${exercise.sets} x ${exercise.reps}`}</p>
