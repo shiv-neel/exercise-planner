@@ -12,7 +12,9 @@ const Table: React.FC<TableProps> = ({ table }) => {
 			<Heading as='h2' my={4} size='lg'>
 				{table!.tname.toUpperCase()}
 			</Heading>
-			<Box className='w-1/2'>{table?.days.toString()}</Box>
+			{table!.days ? (
+				<Box className='w-1/2'>{table!.days.toString()}</Box>
+			) : null}
 		</Box>
 	)
 }

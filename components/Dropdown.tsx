@@ -8,8 +8,8 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ toggleShowDropdown }) => {
-	const { user, signIn, signOut } = useAuth()
 	const { colorMode, toggleColorMode } = useColorMode()
+	const { user, signIn, signOut } = useAuth()
 	return (
 		<VStack
 			className='flex p-2 shadow-md rounded-md'
@@ -22,12 +22,6 @@ const Dropdown: React.FC<DropdownProps> = ({ toggleShowDropdown }) => {
 			<Box className='p-3'>
 				<Box className='mb-4 text-xl font-bold'>{user!.fullName}</Box>
 				<Box className='flex flex-col text-center gap-3'>
-					<Box
-						className='text-sm hover:text-blue-500 hover:font-bold duration-100'
-						onClick={toggleColorMode}
-					>
-						Switch to {colorMode === 'dark' ? 'Light' : 'Dark'} Theme
-					</Box>
 					<Box
 						className='text-sm hover:text-red-500 hover:font-bold duration-100'
 						onClick={signOut}

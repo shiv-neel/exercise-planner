@@ -7,6 +7,11 @@ import {
 	FormLabel,
 	Heading,
 	Input,
+	Stat,
+	StatHelpText,
+	StatLabel,
+	StatNumber,
+	useColorMode,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -14,12 +19,12 @@ import { IoIosArrowBack, IoIosArrowForward, IoIosSend } from 'react-icons/io'
 import CreateExercises from '../components/CreateExercises'
 import { supabase } from '../utils/auth'
 import { useAuth } from '../utils/AuthContext'
+import { stringCasing } from '../utils/dates'
 import { ExerciseType } from '../utils/types'
 
 const CreateNewRoutine = () => {
 	const [page, setPage] = useState<number>(1)
 	const [routine, setRoutine] = useState<string>('')
-
 	const [M, setM] = useState<boolean>(false)
 	const [T, setT] = useState<boolean>(false)
 	const [W, setW] = useState<boolean>(false)
@@ -44,6 +49,7 @@ const CreateNewRoutine = () => {
 		setU,
 	}
 	const [exercises, setExercises] = useState<ExerciseType[]>([])
+	const [tid, setTid] = useState<number | null>(null)
 
 	const pageToRender: any = {
 		1: (
@@ -68,19 +74,37 @@ const CreateNewRoutine = () => {
 			/>
 		),
 	}
-  
-  const uid = useAuth().user?.uid
+
+	const uid = useAuth().user?.uid
 
 	const createTable = async () => {
 		if (!uid) return
+		const days = [M, T, W, R, F, S, U]
+		const { data, error } = await supabase.from('tables').insert([
+			{
+				uid: uid,
+				tname: routine,
+				days: days
+					.map((d, i) => (days[i] ? i : null))
+					.filter((d) => d !== null),
+			},
+		])
+		setTid(data![0].tid)
+		await createExercises(data![0].tid)
+	}
+
+	const createExercises = async (tid: number) => {
+		const exercisesWithTid = exercises.map((e) => ({ ...e, tid: tid }))
+		console.log(exercisesWithTid)
 		const { data, error } = await supabase
-			.from('tables')
-			.insert([{ uid: uid, tname: routine }])
+			.from('exercises')
+			.insert(exercisesWithTid)
+		console.log(data)
 	}
 	return (
 		<Box className='flex flex-col'>
 			<Link href='/'>
-				<Button variant='ghost' w={24} mt={16} mb={8} className='gap-3'>
+				<Button variant='outline' w={24} mt={16} mb={8} className='gap-3'>
 					<IoIosArrowBack /> Back
 				</Button>
 			</Link>
@@ -101,7 +125,6 @@ const CreateNewRoutine = () => {
 				{page < 3 ? (
 					<Button
 						disabled={!routine.length}
-						variant='ghost'
 						className='gap-1'
 						onClick={() => setPage((p) => p + 1)}
 					>
@@ -126,7 +149,7 @@ const CreateRoutineName = ({ routine, setRoutine, whichDays }: any) => {
 	const { M, T, W, R, F, S, U, setM, setT, setW, setR, setF, setS, setU } =
 		whichDays
 	return (
-		<Box className='w-1/2'>
+		<Box className='w-2/3'>
 			<FormControl isRequired>
 				<p className='text-2xl font-bold mb-4'>Routine Name</p>
 				<Input
@@ -221,11 +244,11 @@ const ConfirmRoutine: React.FC<ConfirmRoutine> = ({
 		whichDays
 	const days = [M, T, W, R, F, S, U]
 	return (
-		<Box className='w-1/2 mb-8'>
+		<Box className='w-2/3 mb-8'>
 			<p className='text-2xl font-bold mb-4'>Confirm Routine</p>
-			<p className='text-lg font-bold mt-8 mb-4'>Routine Name</p>
+			<p className='text-xl font-bold mt-8 mb-4'>Routine Name</p>
 			<p className='text-md'>{routine.toUpperCase()}</p>
-			<p className='text-lg font-bold mt-8 mb-4'>Frequency</p>
+			<p className='text-xl font-bold mt-8 mb-4'>Frequency</p>
 			{[
 				'Monday',
 				'Tuesday',
@@ -239,6 +262,32 @@ const ConfirmRoutine: React.FC<ConfirmRoutine> = ({
 				.join('')
 				.slice(0, -2)}
 			<p className='text-lg font-bold mt-8 mb-4'>Exercises</p>
+			<ExerciseListItems exercises={exercises} />
+		</Box>
+	)
+}
+
+interface ExerciseListItems {
+	exercises: ExerciseType[]
+}
+
+export const ExerciseListItems: React.FC<ExerciseListItems> = ({
+	exercises,
+}) => {
+	const { colorMode, toggleColorMode } = useColorMode()
+	const isDark = colorMode === 'dark'
+	return (
+		<Box className='flex flex-wrap my-8 gap-8'>
+			{exercises.map((exercise: ExerciseType, i: number) => (
+				<Box
+					backgroundColor={'grayalpha.100'}
+					className='flex flex-col justify-center w-32 text-center h-32 rounded-xl shadow-lg border-2'
+				>
+					<p className='text-lg'>{stringCasing(exercise.ename)}</p>
+					<p className='italic'>{`${exercise.sets} x ${exercise.reps}`}</p>
+					<p className='text-xl font-bold'>@ {exercise.weight} lb</p>
+				</Box>
+			))}
 		</Box>
 	)
 }

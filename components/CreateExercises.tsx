@@ -6,6 +6,11 @@ import {
 	FormControl,
 	Heading,
 	Input,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
 	Slider,
 	SliderFilledTrack,
 	SliderMark,
@@ -82,24 +87,33 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 	const [weight, setWeight] = useState<number>(0)
 	const [muscles, setMuscles] = useState<string[]>([])
 	const [error, setError] = useState<boolean>(false)
-	const [setsSliderValue, setSetsSliderValue] = useState(0)
-	const [setsTooltip, setSetsShowTooltip] = useState(false)
-	const [repsSliderValue, setRepsSliderValue] = useState(0)
-	const [repsTooltip, setRepsShowTooltip] = useState(false)
 
 	const handleBtnClick = (m: string) => {
 		if (muscles.find((x) => x === m)) setMuscles(muscles.filter((x) => x !== m))
 		else setMuscles([...muscles, m])
 	}
 
-	const submitForm = async () => {
-		if (ename.length === 0 && muscles.length === 0) {
+	const addExercise = () => {
+		console.log(ename, sets, reps, weight, muscles)
+		if (
+			ename === '' ||
+			sets === 0 ||
+			reps === 0 ||
+			weight === 0 ||
+			muscles.length === 0
+		) {
 			setError(true)
 			return
 		}
-		//setExercises(exercises.concat({ ename: ename, muscles: muscles }))
+		setError(false)
+
 		setEname('')
+		setSets(0)
+		setReps(0)
+		setWeight(0)
 		setMuscles([])
+		showForm(false)
+		setExercises([...exercises, { ename, sets, reps, weight, muscles }])
 	}
 	return (
 		<Box>
@@ -193,7 +207,7 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 						min={0}
 						max={10}
 						step={1}
-						onChange={(e: number) => setSetsSliderValue(e)}
+						onChange={(e: number) => setSets(e)}
 					>
 						<SliderTrack>
 							<Box position='relative' right={10} />
@@ -234,13 +248,13 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 						</SliderMark>
 						<SliderThumb boxSize={6} bg='messenger.500' />
 					</Slider>
-					<p className='text-xl font-bold mt-8 mb-4'>Number of Reps</p>
+					<p className='text-xl font-bold mt-12 mb-4'>Number of Reps</p>
 					<Slider
 						defaultValue={0}
 						min={0}
 						max={20}
 						step={1}
-						onChange={(e: number) => setRepsSliderValue(e)}
+						onChange={(e: number) => setReps(e)}
 					>
 						<SliderTrack>
 							<Box position='relative' right={10} />
@@ -282,8 +296,29 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 						<SliderThumb boxSize={6} bg='messenger.500' />
 					</Slider>
 				</Box>
-			</FormControl>{' '}
-			<Button type='submit' className='gap-3 my-8' colorScheme={'messenger'}>
+				<p className='text-xl font-bold mt-12 mb-4'>Weight per Rep</p>
+				<Box className='flex items-center gap-2 my-4'>
+					<NumberInput
+						size='md'
+						maxW={24}
+						min={5}
+						onChange={(e: string) => setWeight(Number(e))}
+					>
+						<NumberInputField />
+						<NumberInputStepper>
+							<NumberIncrementStepper />
+							<NumberDecrementStepper />
+						</NumberInputStepper>
+					</NumberInput>
+					<p>lb</p>
+				</Box>
+			</FormControl>
+			<Button
+				type='submit'
+				className='gap-3 my-8'
+				colorScheme={'messenger'}
+				onClick={addExercise}
+			>
 				<FaCheck />
 				Looks Good to Me!
 			</Button>
