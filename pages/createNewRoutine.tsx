@@ -277,7 +277,7 @@ export const ExerciseListItems: React.FC<ExerciseListItems> = ({
 	const { colorMode, toggleColorMode } = useColorMode()
 	const isDark = colorMode === 'dark'
 	return (
-		<Box className='flex flex-wrap my-8 gap-8'>
+		<Box className='grid grid-flow-col my-8 gap-8'>
 			{exercises.map((exercise: ExerciseType, i: number) => (
 				<Box
 					backgroundColor={'grayalpha.100'}

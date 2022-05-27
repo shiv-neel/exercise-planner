@@ -24,8 +24,19 @@ const Home: NextPage = () => {
 		if (user) getTables(user)
 	}, [user])
 
+	const [timeOfDay, setTimeOfDay] = useState('')
+	const hour = new Date().getHours()
+	useEffect(() => {
+		if (hour < 12) setTimeOfDay('Morning')
+		else if (hour >= 12 && hour < 17) setTimeOfDay('Afternoon')
+		else setTimeOfDay('Evening')
+	}, [hour])
+
 	return (
 		<Box>
+			<p className='text-5xl mt-16 font-bold'>
+				Good {timeOfDay}, {user!.fullName.split(' ')[0]}.
+			</p>
 			<Week tables={tables} />
 			<Divider my={4} />
 			<Tables tables={tables} />

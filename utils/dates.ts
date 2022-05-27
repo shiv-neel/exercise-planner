@@ -18,7 +18,7 @@ export const stringCasing = (str: string) => {
 	const split = str.split(' ')
 	var res = ''
 	for (let i = 0; i < split.length; i++) {
-		res += split[i].charAt(0).toUpperCase() + split[i].slice(1)
+		res += split[i].charAt(0).toUpperCase() + split[i].slice(1) + ' '
 	}
 	return res
 }
