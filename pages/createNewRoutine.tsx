@@ -73,6 +73,7 @@ const CreateNewRoutine = () => {
 				routine={routine}
 				whichDays={whichDays}
 				exercises={exercises}
+				setExercises={setExercises}
 			/>
 		),
 	}
