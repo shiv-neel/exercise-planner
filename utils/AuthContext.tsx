@@ -22,14 +22,28 @@ export const useAuth = () => {
 }
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-	const auth = useAuthProvider()
-	return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
-}
-
-const useAuthProvider = () => {
 	const [user, setUser] = useState<UserType | null>(null)
+	const [loading, setLoading] = useState(true)
 
-	const createUser = async (session: Session | null) => {
+	useEffect(() => {
+		const { data: listener } = supabase.auth.onAuthStateChange(
+			async (event, session) => {
+				const user = await createUser(session)
+				if (session && user) {
+					setUser(user)
+				}
+				setLoading(false)
+			}
+		)
+
+		return () => {
+			listener?.unsubscribe()
+		}
+	}, [])
+
+	const createUser = async (
+		session: Session | null
+	): Promise<UserType | void> => {
 		if (!session || !session.user) return
 		const user: UserType = {
 			uid: session.user!.id,
@@ -44,7 +58,7 @@ const useAuthProvider = () => {
 			// create a new user
 			const { data, error } = await supabase.from('users').insert([user])
 		}
-		setUser(user)
+		return user
 	}
 
 	const signIn = async () => {
@@ -65,12 +79,13 @@ const useAuthProvider = () => {
 		setUser(null)
 	}
 
+	const auth = { user, signIn, signOut }
+
 	useEffect(() => {
 		supabase.auth.onAuthStateChange((event, session) => {
 			if (event === 'SIGNED_IN') createUser(session)
 			else if (event === 'SIGNED_OUT') setUser(null)
 		})
 	}, [])
-
-	return { user, signIn, signOut }
+	return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
 }

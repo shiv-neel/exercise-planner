@@ -5,9 +5,13 @@ import { AiFillCloseCircle } from 'react-icons/ai'
 
 interface DropdownProps {
 	toggleShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
+	setSession: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ toggleShowDropdown }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+	toggleShowDropdown,
+	setSession,
+}) => {
 	const { colorMode, toggleColorMode } = useColorMode()
 	const { user, signIn, signOut } = useAuth()
 	return (
@@ -24,7 +28,10 @@ const Dropdown: React.FC<DropdownProps> = ({ toggleShowDropdown }) => {
 				<Box className='flex flex-col text-center gap-3'>
 					<Box
 						className='text-sm hover:text-red-500 hover:font-bold duration-100'
-						onClick={signOut}
+						onClick={() => {
+							signOut()
+							setSession(false)
+						}}
 					>
 						Sign Out
 					</Box>
