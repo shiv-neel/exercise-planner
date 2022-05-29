@@ -2,7 +2,7 @@ import { Box, Heading } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { supabase } from '../utils/auth'
 import { useAuth } from '../utils/AuthContext'
-import { getDateGivenDay } from '../utils/dates'
+import { getDateGivenDay } from '../utils/utilFns'
 import { TableType } from '../utils/types'
 import DayTile from './DayTile'
 
@@ -25,11 +25,8 @@ const Week: React.FC<WeekProps> = ({ tables }) => {
 	const date = getDateGivenDay('Monday')
 
 	return (
-		<Box>
-			<Heading as='h1' mt={16} mb={8}>
-				{/* Week of {('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getDate()} */}
-				Weekly Plan
-			</Heading>
+		<Box className='mt-28'>
+			<p className='mb-8 text-2xl font-semibold'>Your Weekly Plan</p>
 			<Box className='flex'>
 				{DAYS.map((day, i) => (
 					<DayTile tables={tables} day={day} key={i} />

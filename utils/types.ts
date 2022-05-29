@@ -6,7 +6,7 @@ export interface TableType {
 }
 
 export interface ExerciseType {
-	eid?: number // primary key
+	eid: number // primary key
 	tid?: number // foreign key
 	ename: string
 	sets: number

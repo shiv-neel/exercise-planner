@@ -20,7 +20,7 @@ import {
 	Tooltip,
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { FaCheck, FaPlus } from 'react-icons/fa'
+import { FaCheck, FaMinus, FaPlus } from 'react-icons/fa'
 import { ExerciseType } from '../utils/types'
 import Exercises from './Exercises'
 import allMuscles from '../utils/muscleGroups'
@@ -39,17 +39,30 @@ const CreateExercises: React.FC<CreateExercises> = ({
 }) => {
 	const [form, showForm] = useState<boolean>(false)
 	return (
-		<Box className='w-1/2'>
+		<Box className=''>
 			<p className='text-2xl font-bold mb-4'>{routine?.toUpperCase()}</p>
-
+			<Exercises
+				routine={routine}
+				exercises={exercises}
+				setExercises={setExercises}
+			/>
 			<Button
 				className='gap-3 my-4'
-				disabled={form}
-				onClick={() => showForm(true)}
+				onClick={() => showForm((f) => !f)}
 				colorScheme={'messenger'}
+				variant={form ? 'outline' : 'solid'}
 			>
-				<FaPlus />
-				Create New Exercise
+				{form ? (
+					<>
+						<FaMinus />
+						Close
+					</>
+				) : (
+					<>
+						<FaPlus />
+						Create New Exercise
+					</>
+				)}
 			</Button>
 			{form ? (
 				<NewExerciseForm
@@ -59,14 +72,19 @@ const CreateExercises: React.FC<CreateExercises> = ({
 					setExercises={setExercises}
 				/>
 			) : null}
-			<Exercises
-				routine={routine}
-				exercises={exercises}
-				setExercises={setExercises}
-			/>
 		</Box>
 	)
 }
+
+/*
+*
+*
+*
+NewExerciseForm
+*
+*
+*
+*/
 
 interface ExerciseFormProps {
 	form: boolean
@@ -81,6 +99,7 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 	exercises,
 	setExercises,
 }) => {
+	const [tempEid, setTempEid] = useState<number>(0)
 	const [ename, setEname] = useState<string>('')
 	const [sets, setSets] = useState<number>(0)
 	const [reps, setReps] = useState<number>(0)
@@ -94,6 +113,7 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 	}
 
 	const addExercise = () => {
+		const eid = tempEid
 		console.log(ename, sets, reps, weight, muscles)
 		if (
 			ename === '' ||
@@ -106,14 +126,14 @@ const NewExerciseForm: React.FC<ExerciseFormProps> = ({
 			return
 		}
 		setError(false)
-
+		setTempEid(Math.random())
 		setEname('')
 		setSets(0)
 		setReps(0)
 		setWeight(0)
 		setMuscles([])
 		showForm(false)
-		setExercises([...exercises, { ename, sets, reps, weight, muscles }])
+		setExercises([...exercises, { eid, ename, sets, reps, weight, muscles }])
 	}
 	return (
 		<Box>

@@ -9,8 +9,11 @@ const Navbar = () => {
 	const { user, signIn, signOut } = useAuth()
 	const [user_, setUser] = useState<UserType | null>(null)
 	useEffect(() => {
-		if (user) setUser(user)
-	}, [user, user_])
+		const token = localStorage.getItem('supabase.auth.token')
+		if (user && token) {
+			setUser(user)
+		}
+	}, [user])
 	const { colorMode, toggleColorMode } = useColorMode()
 
 	const [isChecked, setChecked] = useState<boolean>(false)
@@ -35,12 +38,12 @@ const Navbar = () => {
 					className='hover:cursor-pointer flex justify-center'
 					onClick={user ? toggleDropdown : signIn}
 				>
-					{!user ? (
+					{!user_ ? (
 						<Button>Sign In</Button>
 					) : (
 						<Image
 							className='hover:scale-105 duration-150 shadow-md'
-							src={user.imgUrl}
+							src={user_.imgUrl}
 							rounded='100%'
 							w={16}
 						/>

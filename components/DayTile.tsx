@@ -2,7 +2,7 @@ import { Box, Button, Image, useColorMode } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { TableType } from '../utils/types'
 import { FiEdit } from 'react-icons/fi'
-import { getDateGivenDay } from '../utils/dates'
+import { getDateGivenDay } from '../utils/utilFns'
 
 interface DayProps {
 	day: string
@@ -70,7 +70,7 @@ const DayTile: React.FC<DayProps> = ({ day, tables }) => {
 				<Box className='font-bold text-2xl'>{plan.toUpperCase()}</Box>
 			</Box>
 			<Button variant={'ghost'} size='xs' className='rounded-full py-3'>
-				<FiEdit className='text-xs cursor-pointer' />
+				<FiEdit className='text-xl cursor-pointer' />
 			</Button>
 		</Box>
 	)

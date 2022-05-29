@@ -1,3 +1,5 @@
+import muscleGroups from './muscleGroups'
+
 export const shift: any = {
 	Monday: 1,
 	Tuesday: 2,
@@ -21,4 +23,23 @@ export const stringCasing = (str: string) => {
 		res += split[i].charAt(0).toUpperCase() + split[i].slice(1) + ' '
 	}
 	return res
+}
+
+export const badgeColor = (str: string): string => {
+	if (muscleGroups.ARMS.includes(str)) {
+		return 'whatsapp'
+	}
+	if (muscleGroups.BACK.includes(str)) {
+		return 'red'
+	}
+	if (muscleGroups.CHEST.includes(str)) {
+		return 'yellow'
+	}
+	if (muscleGroups.LEGS.includes(str)) {
+		return 'teal'
+	}
+	if (muscleGroups.SHOULDERS.includes(str)) {
+		return 'purple'
+	}
+	return 'grayAlpha'
 }

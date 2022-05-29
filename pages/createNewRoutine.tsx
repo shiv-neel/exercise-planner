@@ -19,8 +19,10 @@ import { IoIosArrowBack, IoIosArrowForward, IoIosSend } from 'react-icons/io'
 import CreateExercises from '../components/CreateExercises'
 import { supabase } from '../utils/auth'
 import { useAuth } from '../utils/AuthContext'
-import { stringCasing } from '../utils/dates'
+import { stringCasing } from '../utils/utilFns'
 import { ExerciseType } from '../utils/types'
+import ExerciseListItems from '../components/ExerciseListItems'
+import ConfirmRoutine from '../components/ConfirmRoutine'
 
 const CreateNewRoutine = () => {
 	const [page, setPage] = useState<number>(1)
@@ -83,7 +85,7 @@ const CreateNewRoutine = () => {
 		const { data, error } = await supabase.from('tables').insert([
 			{
 				uid: uid,
-				tname: routine,
+				tname: routine.toUpperCase(),
 				days: days
 					.map((d, i) => (days[i] ? i : null))
 					.filter((d) => d !== null),
@@ -113,7 +115,7 @@ const CreateNewRoutine = () => {
 			</Heading>
 			<Divider className='my-8' />
 			{pageToRender[page]}
-			<Box className='flex'>
+			<Box className='flex mt-8'>
 				<Button
 					variant='ghost'
 					disabled={page === 1}
@@ -149,7 +151,7 @@ const CreateRoutineName = ({ routine, setRoutine, whichDays }: any) => {
 	const { M, T, W, R, F, S, U, setM, setT, setW, setR, setF, setS, setU } =
 		whichDays
 	return (
-		<Box className='w-2/3'>
+		<Box className='w-1/2'>
 			<FormControl isRequired>
 				<p className='text-2xl font-bold mb-4'>Routine Name</p>
 				<Input
@@ -230,67 +232,8 @@ const CreateRoutineName = ({ routine, setRoutine, whichDays }: any) => {
 	)
 }
 
-interface ConfirmRoutine {
-	routine: string
-	whichDays: any
-	exercises: ExerciseType[]
-}
-const ConfirmRoutine: React.FC<ConfirmRoutine> = ({
-	routine,
-	whichDays,
-	exercises,
-}) => {
-	const { M, T, W, R, F, S, U, setM, setT, setW, setR, setF, setS, setU } =
-		whichDays
-	const days = [M, T, W, R, F, S, U]
-	return (
-		<Box className='w-2/3 mb-8'>
-			<p className='text-2xl font-bold mb-4'>Confirm Routine</p>
-			<p className='text-xl font-bold mt-8 mb-4'>Routine Name</p>
-			<p className='text-md'>{routine.toUpperCase()}</p>
-			<p className='text-xl font-bold mt-8 mb-4'>Frequency</p>
-			{[
-				'Monday',
-				'Tuesday',
-				'Wednesday',
-				'Thursday',
-				'Friday',
-				'Saturday',
-				'Sunday',
-			]
-				.map((day, i) => (i < 7 && days[i] ? `${day}, ` : ''))
-				.join('')
-				.slice(0, -2)}
-			<p className='text-lg font-bold mt-8 mb-4'>Exercises</p>
-			<ExerciseListItems exercises={exercises} />
-		</Box>
-	)
-}
 
-interface ExerciseListItems {
-	exercises: ExerciseType[]
-}
 
-export const ExerciseListItems: React.FC<ExerciseListItems> = ({
-	exercises,
-}) => {
-	const { colorMode, toggleColorMode } = useColorMode()
-	const isDark = colorMode === 'dark'
-	return (
-		<Box className='grid grid-flow-col my-8 gap-8'>
-			{exercises.map((exercise: ExerciseType, i: number) => (
-				<Box
-					backgroundColor={'grayalpha.100'}
-					className='flex flex-col justify-center w-32 text-center h-32 rounded-xl shadow-lg border-2'
-					key={i}
-				>
-					<p className='text-lg'>{stringCasing(exercise.ename)}</p>
-					<p className='italic'>{`${exercise.sets} x ${exercise.reps}`}</p>
-					<p className='text-xl font-bold'>@ {exercise.weight} lb</p>
-				</Box>
-			))}
-		</Box>
-	)
-}
+
 
 export default CreateNewRoutine
