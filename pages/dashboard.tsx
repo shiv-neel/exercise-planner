@@ -1,6 +1,5 @@
 import { Box, Divider } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Tables from '../components/Tables'
 import Week from '../components/Week'
@@ -21,10 +20,6 @@ const Dashboard: NextPage = () => {
 	}
 	useEffect(() => {
 		const token = localStorage.getItem('supabase.auth.token')
-		if (!token) {
-			const router = useRouter()
-			router.push('/')
-		}
 		if (user && token) {
 			setFullName(user.fullName)
 			getTables(user)
